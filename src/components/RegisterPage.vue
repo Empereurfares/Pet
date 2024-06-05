@@ -1,21 +1,19 @@
 <template>
   <div>
-    <h1>Register</h1>
+    <h2>Register</h2>
     <form @submit.prevent="register">
-      <div>
-        <label for="username">Username:</label>
-        <input type="text" v-model="username" required />
-      </div>
-      <div>
-        <label for="email">Email:</label>
-        <input type="email" v-model="email" required />
-      </div>
-      <div>
-        <label for="password">Password:</label>
-        <input type="password" v-model="password" required />
-      </div>
+      <label for="username">Username:</label>
+      <input type="text" id="username" v-model="username" required />
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" v-model="email" required />
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" v-model="password" required />
+
       <button type="submit">Register</button>
     </form>
+    <p v-if="error">{{ error }}</p>
   </div>
 </template>
 
@@ -25,7 +23,8 @@ export default {
     return {
       username: '',
       email: '',
-      password: ''
+      password: '',
+      error: ''
     };
   },
   methods: {
@@ -42,20 +41,23 @@ export default {
             password: this.password
           })
         });
-        console.log('Response status:', response.status);
-        if (response.ok) {
-          const user = await response.json();
-          localStorage.setItem('user', JSON.stringify(user));
-          this.$router.push('/');
-          window.location.reload(); // Reload the page to ensure the navbar updates
-        } else {
-          alert('Registration failed');
+
+        if (!response.ok) {
+          throw new Error('Failed to register');
         }
-      } catch (err) {
-        alert('An error occurred. Please try again.');
-        console.error('Error:', err);
+
+        const data = await response.json();
+        console.log('Registration successful:', data);
+        this.$router.push('/login');
+      } catch (error) {
+        console.error('Error:', error);
+        this.error = 'Failed to register. Please try again.';
       }
     }
   }
 };
 </script>
+
+<style scoped>
+/* Add your styles here */
+</style>

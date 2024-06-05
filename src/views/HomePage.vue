@@ -1,16 +1,28 @@
 <template>
-    <div>
-      <HomePage />
-    </div>
-  </template>
+  <div>
+    <h1>Welcome to HomePage</h1>
+    <!-- Other contents of the HomePage -->
+  </div>
+</template>
 
 <script>
-import HomePage from '@/components/HomePage.vue'
-
 export default {
   name: 'HomePage',
-  components: {
-    HomePage
+  created() {
+    console.log('HomePage created');
+  },
+  mounted() {
+    console.log('HomePage mounted');
+  },
+  updated() {
+    console.log('HomePage updated');
+  },
+  beforeUnmount() {
+    console.log('HomePage before unmount');
   }
-}
+};
 </script>
+
+<style scoped>
+/* Your styles */
+</style>

@@ -1,19 +1,17 @@
 <template>
   <div class="pet-list">
-    <h1>List of Pets</h1>
-    <div v-if="pets.length" class="pet-cards">
-      <div v-for="pet in pets" :key="pet.id" class="pet-card">
-        <h2>{{ pet.name }}</h2>
-        <p><strong>Type:</strong> {{ pet.type }}</p>
-        <p><strong>Email:</strong> {{ pet.email }}</p>
-        <p><strong>Address:</strong> {{ pet.address }}</p>
-        <p><strong>Telephone:</strong> {{ pet.telephone }}</p>
-        <p><strong>Status:</strong> {{ pet.status }}</p>
-        <button @click="markAsSaved(pet)">Mark as Saved</button>
-      </div>
-    </div>
-    <div v-else>
-      <p>No pets found.</p>
+    <div v-for="pet in pets" :key="pet.id" class="pet-card">
+      <h3>{{ pet.name }}</h3>
+      <p><strong>Type:</strong> {{ pet.petType }}</p>
+      <p><strong>Description:</strong> {{ pet.description }}</p>
+      <p><strong>Date:</strong> {{ pet.date }}</p>
+      <p><strong>Address:</strong> {{ pet.address }}</p>
+      <p><strong>Telephone:</strong> {{ pet.telephone }}</p>
+      <p><strong>Email:</strong> {{ pet.email }}</p>
+      <p><strong>Gender:</strong> {{ pet.gender }}</p>
+      <p><strong>Owner Name:</strong> {{ pet.name }}</p>
+      <p><strong>Status:</strong> {{ pet.status }}</p>
+      <button @click="toggleStatus(pet)">{{ pet.status === 'saved' ? 'Mark as Not Saved' : 'Mark as Saved' }}</button>
     </div>
   </div>
 </template>
@@ -29,28 +27,26 @@ export default {
     this.fetchPets();
   },
   methods: {
-    async fetchPets() {
-      try {
-        const response = await fetch('http://localhost:5000/pets');
-        this.pets = await response.json();
-      } catch (err) {
-        console.error('Failed to fetch pets:', err);
-      }
-    },
-    async markAsSaved(pet) {
-      try {
-        pet.status = 'saved';
-        await fetch(`http://localhost:5000/pets/${pet.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(pet)
+    fetchPets() {
+      fetch('http://localhost:3000/pets')
+        .then(response => response.json())
+        .then(data => {
+          this.pets = data;
         });
-        this.fetchPets(); // Refresh the list
-      } catch (err) {
-        console.error('Failed to update pet status:', err);
-      }
+    },
+    toggleStatus(pet) {
+      pet.status = pet.status === 'saved' ? 'not saved' : 'saved';
+      fetch(`http://localhost:3000/pets/${pet.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(pet)
+      })
+        .then(response => response.json())
+        .then(() => {
+          this.fetchPets();
+        });
     }
   }
 };
@@ -58,37 +54,38 @@ export default {
 
 <style scoped>
 .pet-list {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-.pet-cards {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
 }
+
 .pet-card {
-  flex: 1 1 calc(33.333% - 1rem);
-  background-color: #f9f9f9;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
   padding: 1rem;
-  border-radius: 5px;
+  width: calc(33.333% - 2rem);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.pet-card h2 {
+
+.pet-card h3 {
   margin-top: 0;
 }
+
 .pet-card p {
   margin: 0.5rem 0;
 }
+
 .pet-card button {
-  background-color: #007bff;
+  background-color: #4CAF50;
   color: white;
-  padding: 0.5rem;
   border: none;
-  border-radius: 4px;
+  padding: 0.5rem 1rem;
   cursor: pointer;
+  border-radius: 4px;
 }
+
 .pet-card button:hover {
-  background-color: #0056b3;
+  background-color: #45a049;
 }
 </style>
