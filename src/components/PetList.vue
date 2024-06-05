@@ -2,16 +2,18 @@
   <div class="pet-list">
     <div v-for="pet in pets" :key="pet.id" class="pet-card">
       <h3>{{ pet.name }}</h3>
-      <p><strong>Type:</strong> {{ pet.petType }}</p>
+      <p><strong>Type:</strong> {{ pet.type }}</p>
+      <p><strong>Pet Type:</strong> {{ pet.petType }}</p>
       <p><strong>Description:</strong> {{ pet.description }}</p>
       <p><strong>Date:</strong> {{ pet.date }}</p>
       <p><strong>Address:</strong> {{ pet.address }}</p>
       <p><strong>Telephone:</strong> {{ pet.telephone }}</p>
       <p><strong>Email:</strong> {{ pet.email }}</p>
       <p><strong>Gender:</strong> {{ pet.gender }}</p>
-      <p><strong>Owner Name:</strong> {{ pet.name }}</p>
       <p><strong>Status:</strong> {{ pet.status }}</p>
-      <button @click="toggleStatus(pet)">{{ pet.status === 'saved' ? 'Mark as Not Saved' : 'Mark as Saved' }}</button>
+      <button @click="toggleStatus(pet)">
+        {{ pet.status === 'saved' ? 'Mark as Not Saved' : 'Mark as Saved' }}
+      </button>
     </div>
   </div>
 </template>
@@ -27,26 +29,35 @@ export default {
     this.fetchPets();
   },
   methods: {
-    fetchPets() {
-      fetch('http://localhost:3000/pets')
-        .then(response => response.json())
-        .then(data => {
-          this.pets = data;
-        });
+    async fetchPets() {
+      try {
+        const response = await fetch('http://localhost:5000/pets');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        this.pets = data;
+      } catch (error) {
+        console.error('Failed to fetch pets:', error);
+      }
     },
-    toggleStatus(pet) {
-      pet.status = pet.status === 'saved' ? 'not saved' : 'saved';
-      fetch(`http://localhost:3000/pets/${pet.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(pet)
-      })
-        .then(response => response.json())
-        .then(() => {
-          this.fetchPets();
+    async toggleStatus(pet) {
+      try {
+        pet.status = pet.status === 'saved' ? 'not saved' : 'saved';
+        const response = await fetch(`http://localhost:5000/pets/${pet.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(pet)
         });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        this.fetchPets();
+      } catch (error) {
+        console.error('Failed to update pet status:', error);
+      }
     }
   }
 };

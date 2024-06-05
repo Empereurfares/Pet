@@ -15,6 +15,21 @@
       "telephone": "47996190178",
       "email": "empereurfares@gmail.com",
       "status": "not saved"
+    },
+    {
+      "id": "1acb",
+      "type": "Encontrei",
+      "petType": "Dog",
+      "gender": "Female",
+      "date": "2024-06-15",
+      "address": "szcadcascda",
+      "description": "sassa",
+      "name": "123abc",
+      "telephone": "47996190178",
+      "email": "empereurfares@gmail.com",
+      "photos": [
+        {}
+      ]
     }
   ],
   "users": [

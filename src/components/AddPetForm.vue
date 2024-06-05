@@ -1,58 +1,102 @@
 <template>
   <div>
-    <step1 v-if="currentStep === 1" v-model:formData="formData" @next-step="updateFormData" />
-    <step2 v-if="currentStep === 2" v-model:formData="formData" @previous-step="previousStep" @next-step="updateFormData" />
-    <step3 v-if="currentStep === 3" v-model:formData="formData" @previous-step="previousStep" @next-step="updateFormData" />
-    <step4 v-if="currentStep === 4" v-model:formData="formData" @previous-step="previousStep" @next-step="updateFormData" />
-    <step5 v-if="currentStep === 5" v-model:formData="formData" @previous-step="previousStep" @submit-form="submitForm" />
+    <h2>Add Pet</h2>
+    <form @submit.prevent="submitForm">
+      <div v-if="step === 1">
+        <label>Type:</label>
+        <select v-model="formData.type">
+          <option>Perdi</option>
+          <option>Encontrei</option>
+        </select>
+        <label>Pet Type:</label>
+        <select v-model="formData.petType">
+          <option>Cat</option>
+          <option>Dog</option>
+          <option>Bird</option>
+          <option>Other</option>
+        </select>
+        <label>Gender:</label>
+        <select v-model="formData.gender">
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+        <button type="button" @click="nextStep">Next</button>
+      </div>
+      <div v-else-if="step === 2">
+        <label>Upload Photo:</label>
+        <input type="file" @change="handleFileUpload" />
+        <button type="button" @click="previousStep">Previous</button>
+        <button type="button" @click="nextStep">Next</button>
+      </div>
+      <div v-else-if="step === 3">
+        <label>Date:</label>
+        <input type="date" v-model="formData.date" />
+        <label>Address:</label>
+        <input type="text" v-model="formData.address" />
+        <button type="button" @click="previousStep">Previous</button>
+        <button type="button" @click="nextStep">Next</button>
+      </div>
+      <div v-else-if="step === 4">
+        <label>Description:</label>
+        <textarea v-model="formData.description"></textarea>
+        <button type="button" @click="previousStep">Previous</button>
+        <button type="button" @click="nextStep">Next</button>
+      </div>
+      <div v-else-if="step === 5">
+        <label>Name:</label>
+        <input type="text" v-model="formData.name" />
+        <label>Telephone:</label>
+        <input type="tel" v-model="formData.telephone" />
+        <label>Email:</label>
+        <input type="email" v-model="formData.email" />
+        <button type="button" @click="previousStep">Previous</button>
+        <button type="submit">Submit</button>
+      </div>
+    </form>
   </div>
 </template>
 
 <script>
-import Step1 from './Step1.vue';
-import Step2 from './Step2.vue';
-import Step3 from './Step3.vue';
-import Step4 from './Step4.vue';
-import Step5 from './Step5.vue';
-
 export default {
-  components: {
-    Step1,
-    Step2,
-    Step3,
-    Step4,
-    Step5
-  },
   data() {
     return {
-      currentStep: 1,
+      step: 1,
       formData: {
-        name: '',
-        type: 'Perdi',
-        description: '',
+        type: '',
+        petType: '',
+        gender: '',
         date: '',
-        gender: ''
+        address: '',
+        description: '',
+        name: '',
+        telephone: '',
+        email: '',
+        photos: []
       }
     };
   },
   methods: {
-    updateFormData(updatedData) {
-      this.formData = { ...this.formData, ...updatedData };
-      this.currentStep++;
+    nextStep() {
+      this.step++;
     },
     previousStep() {
-      this.currentStep--;
+      this.step--;
     },
-    async submitForm(updatedData) {
-      this.formData = { ...this.formData, ...updatedData };
+    handleFileUpload(event) {
+      this.formData.photos = Array.from(event.target.files);
+    },
+    async submitForm() {
       try {
-        await fetch('http://localhost:3000/pets', {
+        const response = await fetch('http://localhost:5000/pets', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(this.formData)
         });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
         this.$router.push('/pets');
       } catch (error) {
         console.error('Error submitting form:', error);
