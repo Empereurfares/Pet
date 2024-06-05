@@ -1,63 +1,94 @@
 <template>
-  <div class="container mt-5">
-    <h1 class="mb-4">Pets</h1>
-    <div class="row">
-      <div class="col-md-4" v-for="pet in pets" :key="pet.id">
-        <div class="card mb-4">
-          <div class="card-body">
-            <h5 class="card-title">{{ pet.name }}</h5>
-            <p class="card-text"><strong>Type:</strong> {{ pet.type }}</p>
-            <p class="card-text"><strong>Status:</strong> {{ pet.status }}</p>
-            <p class="card-text"><strong>Email:</strong> {{ pet.email }}</p>
-            <p class="card-text"><strong>Address:</strong> {{ pet.address }}</p>
-            <p class="card-text"><strong>Telephone:</strong> {{ pet.telephone }}</p>
-            <div class="d-flex justify-content-between">
-              <button class="btn btn-primary" @click="editPet(pet)">Edit</button>
-              <button class="btn btn-danger" @click="deletePet(pet.id)">Delete</button>
-            </div>
-          </div>
-        </div>
+  <div class="pet-list">
+    <h1>List of Pets</h1>
+    <div v-if="pets.length" class="pet-cards">
+      <div v-for="pet in pets" :key="pet.id" class="pet-card">
+        <h2>{{ pet.name }}</h2>
+        <p><strong>Type:</strong> {{ pet.type }}</p>
+        <p><strong>Email:</strong> {{ pet.email }}</p>
+        <p><strong>Address:</strong> {{ pet.address }}</p>
+        <p><strong>Telephone:</strong> {{ pet.telephone }}</p>
+        <p><strong>Status:</strong> {{ pet.status }}</p>
+        <button @click="markAsSaved(pet)">Mark as Saved</button>
       </div>
+    </div>
+    <div v-else>
+      <p>No pets found.</p>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'PetList',
-  data () {
+  data() {
     return {
       pets: []
-    }
+    };
   },
-  created () {
-    this.fetchPets()
+  created() {
+    this.fetchPets();
   },
   methods: {
-    fetchPets () {
-      fetch('http://localhost:5000/pets')
-        .then(response => response.json())
-        .then(data => {
-          this.pets = data
-        })
+    async fetchPets() {
+      try {
+        const response = await fetch('http://localhost:5000/pets');
+        this.pets = await response.json();
+      } catch (err) {
+        console.error('Failed to fetch pets:', err);
+      }
     },
-    editPet (pet) {
-      this.$router.push({
-        path: `/edit-pet/${pet.id}`,
-        query: { ...pet }
-      })
-    },
-    deletePet (id) {
-      fetch(`http://localhost:5000/pets/${id}`, {
-        method: 'DELETE'
-      }).then(() => {
-        this.fetchPets()
-      })
+    async markAsSaved(pet) {
+      try {
+        pet.status = 'saved';
+        await fetch(`http://localhost:5000/pets/${pet.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(pet)
+        });
+        this.fetchPets(); // Refresh the list
+      } catch (err) {
+        console.error('Failed to update pet status:', err);
+      }
     }
   }
-}
+};
 </script>
 
 <style scoped>
-/* Add your styles here */
+.pet-list {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+.pet-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.pet-card {
+  flex: 1 1 calc(33.333% - 1rem);
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.pet-card h2 {
+  margin-top: 0;
+}
+.pet-card p {
+  margin: 0.5rem 0;
+}
+.pet-card button {
+  background-color: #007bff;
+  color: white;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.pet-card button:hover {
+  background-color: #0056b3;
+}
 </style>

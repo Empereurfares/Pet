@@ -42,6 +42,7 @@ export default {
             password: this.password
           })
         });
+        console.log('Response status:', response.status);
         if (response.ok) {
           const user = await response.json();
           localStorage.setItem('user', JSON.stringify(user));
@@ -52,6 +53,7 @@ export default {
         }
       } catch (err) {
         alert('An error occurred. Please try again.');
+        console.error('Error:', err);
       }
     }
   }

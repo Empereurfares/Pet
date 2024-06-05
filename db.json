@@ -1,54 +1,36 @@
 {
   "pets": [
     {
-      "id": "1b88",
-      "name": "Виктория Фарес 15552333355",
-      "type": "daa",
-      "status": "f",
-      "email": "virginia.vulf@mail.ru",
-      "address": "ул.Достоевского, д.110/1, кв.7",
-      "telephone": "8 (917) 419-76-71"
-    },
-    {
-      "id": "5e9d",
-      "name": "ALI HUSSEIN FARES 333",
-      "type": "22",
-      "status": "2222",
+      "id": "0cd3",
+      "name": "ALI HUSSEIN FARES",
+      "type": "Perdi",
       "email": "empereurfares@gmail.com",
       "address": "Avenida Brasil, 1551",
-      "telephone": "47996190178"
+      "telephone": "47996190178",
+      "status": "saved"
+    },
+    {
+      "id": "8ccf",
+      "name": "Виктория Фарес",
+      "type": "Perdi",
+      "email": "virginia.vulf@mail.ru",
+      "address": "ул.Достоевского, д.110/1, кв.7",
+      "telephone": "8 (917) 419-76-71",
+      "status": "no saved"
     }
   ],
   "users": [
     {
-      "id": "1",
-      "username": "testuser",
-      "email": "test@example.com",
-      "password": "password123"
-    },
-    {
-      "id": "03a4",
+      "id": "ca0a",
       "username": "a",
       "email": "empereurfares@gmail.com",
       "password": "a"
     },
     {
-      "id": "fd73",
+      "id": "367e",
       "username": "b",
       "email": "virginia.vulf@mail.ru",
       "password": "b"
-    },
-    {
-      "id": "4c0e",
-      "username": "a",
-      "email": "empereurfares@gmail.com",
-      "password": "a"
-    },
-    {
-      "id": "894e",
-      "username": "c",
-      "email": "virginia.vulf@mail.ru",
-      "password": "c"
     }
   ]
 }

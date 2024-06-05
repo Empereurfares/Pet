@@ -1,11 +1,13 @@
-const { defineConfig } = require('@vue/cli-service');
-
-module.exports = defineConfig({
-  transpileDependencies: true,
-  lintOnSave: false, // Add this line to disable linting on save if desired
+// vue.config.js
+module.exports = {
   configureWebpack: {
+    resolve: {
+      alias: {
+        vue$: 'vue/dist/vue.esm-bundler.js'
+      }
+    },
     plugins: [
-      // add any necessary plugins here
+      // Add any necessary plugins here
     ]
   }
-});
+};
